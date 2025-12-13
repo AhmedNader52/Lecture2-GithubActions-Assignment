@@ -1,0 +1,47 @@
+name: Simple Expressions Demo
+
+on:
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment name
+        required: false
+        default: staging
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show basic context values
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch ref: ${{ github.ref }}"
+          echo "Actor: ${{ github.actor }}"
+
+      - name: startsWith() example
+        if: startsWith(github.ref, 'refs/heads/main')
+        run: echo "This is the MAIN branch"
+
+      - name: contains() example
+        if: contains(github.ref, 'dev')
+        run: echo "This is the DEV branch"
+
+      - name: Logical OR (||) example
+        run: echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
+
+      - name: format() example
+        run: echo "${{ format('Image tag: {0}:{1}', github.repository, github.sha) }}"
+
+      - name: success() example
+        if: success()
+        run: echo "All previous steps succeeded ✅"
+
+      - name: always() example
+        if: always()
+        run: echo "This step always runs 🧹"
+
+      - name: toJSON() example
+        run: echo '${{ toJSON(github) }}'
