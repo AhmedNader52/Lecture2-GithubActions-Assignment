@@ -1,4 +1,4 @@
-name:  CI-with-Composite-Action
+name:  CI-with-custom-action-react-app
 
 on:
   workflow_dispatch:
