@@ -29,12 +29,11 @@ jobs:
     
     - name: Using Custom Action 
       id: React_Docker_build_and_push
-      continue-on-error: true
       uses: mohammedd2510/Reusable-Workflows-Custom-Actions/.github/actions/react-docker-build-push@main
       with:
             registry: ghcr.io
             username: ${{ github.actor }}
-            password: 123
+            password: ${{ secrets.GITHUB_TOKEN }}
             image-name: react-app-cicd
             tag: ${{ github.sha }}
     - name: Output Image Name
