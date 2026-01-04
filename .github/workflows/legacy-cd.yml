@@ -1,23 +1,26 @@
-name : Legacy CD pipeline
+name: Legacy CD pipeline
+
 on:
   workflow_run:
     workflows: ["Legacy CI pipeline"]
     types:
       - completed
-jobs: 
+
+jobs:
   deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name : checkout code 
-        uses : actions/checkout@v4
-
-      - name : Download the build artifacts
-        uses : actions/download-artifact@v4
+      - name: Download the build artifacts
+        uses: actions/download-artifact@v4
         with:
           name: react-app-build
+          path: ./deploy-artifact
 
-      - name : instead of actual deploymment 
-        run : echo "Deploying to server"    
-
+      - name: Simulate deployment
+        run: |
+          echo "Deploying to server"
+          ls -R ./deploy-artifact
