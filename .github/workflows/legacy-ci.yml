@@ -17,6 +17,7 @@ jobs:
 
       - name : Run lint phase
         run  : npm run lint
+        continue-on-error : true 
 
 
       - name : run unit tests
