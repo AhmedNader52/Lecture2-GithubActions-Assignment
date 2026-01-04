@@ -1,7 +1,7 @@
 name : Legacy CD pipeline
 on:
   workflow_run:
-    workflows: ["legacy-ci"]
+    workflows: ["Legacy CI pipeline"]
     types:
       - completed
 jobs: 
