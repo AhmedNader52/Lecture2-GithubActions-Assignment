@@ -28,9 +28,9 @@ jobs:
         run  : npm run build
 
 
-      - name : upload build artifacts
-        uses : actions/upload-artifact@v4
-        with :
-          name : react-app-build
-          path : dist/       
+      - name: upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-app-build
+          path: dist/       
          
