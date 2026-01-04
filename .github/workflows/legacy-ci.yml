@@ -1,0 +1,35 @@
+name : Legacy CI pipeline
+on: [push , pull_request]
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name : install node.js 20
+        uses : actions/setup-node@v6.1.0 
+        with :
+          node-version: 20
+
+      - name : Install Dependencies
+        run  : npm install 
+
+      - name : Run lint phase
+        run  : npm run lint
+
+
+      - name : run unit tests
+        run  : npm run test
+
+
+      - name : build static files
+        run  : npm run build
+
+
+      - name : upload build artifacts
+        uses : actions/upload-artifacts@v4
+        with :
+          name : react-app-build
+          path : dist/       
+         
