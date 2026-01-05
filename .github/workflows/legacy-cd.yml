@@ -1,10 +1,12 @@
 name: Legacy CD pipeline
 
 on:
-  workflow_run:
-    workflows: ["Legacy CI pipeline"]
-    types:
-      - completed
+  workflow_dispatch:
+      push:
+        branches:
+         - main 
+     
+   
 
 jobs:
   deploy:
