@@ -1,10 +1,10 @@
 name: Legacy CD pipeline
 
 on:
-  workflow_dispatch:
-      push:
-        branches:
-         - main 
+  workflow_run:
+    workflows: ["Legacy CI pipeline"]
+    types:
+      - completed
      
    
 
@@ -26,4 +26,5 @@ jobs:
         run: |
           echo "Deploying to server"
          
+
 
