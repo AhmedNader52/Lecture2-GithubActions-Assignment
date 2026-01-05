@@ -33,11 +33,19 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-      # 6️⃣ Build static files
+      # 6️⃣ Build React app
       - name: Build React app
         run: npm run build
 
-      # 7️⃣ Normalize repo owner for Docker (critical)
+      # 6.5️⃣ Prepare folder for Docker (must exist as dist/)
+      - name: Prepare dist folder for Docker
+        run: |
+          if [ -d build ]; then
+            rm -rf dist
+            mv build dist
+          fi
+
+      # 7️⃣ Normalize repository owner for Docker
       - name: Normalize repository owner
         run: echo "OWNER_LOWER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
