@@ -1,6 +1,7 @@
 name: Dockerized CI pipeline
 
-on: push
+on:
+  push:
 
 permissions:
   packages: write
@@ -9,38 +10,50 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout the repo with full history so commit SHAs work
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Use Node.js 20
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
 
-      - name: Run lint phase
+      # 4️⃣ Run lint (errors won't fail workflow)
+      - name: Run lint
         run: npm run lint
         continue-on-error: true
 
+      # 5️⃣ Run unit tests
       - name: Run unit tests
         run: npm run test
 
-      - name: Build static files
+      # 6️⃣ Build the React app (produces 'build' folder)
+      - name: Build React app
         run: npm run build
 
+      # 7️⃣ Log in to GHCR
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ahmednader52
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # 8️⃣ Build and push Docker image
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           push: true
           tags: |
-            ghcr.io/ahmednader52/react-app-cicd:${{ github.sha }}
-            ghcr.io/ahmednader52/react-app-cicd:latest
+            ghcr.io/${{ github.repository_owner }}/react-app-cicd:latest
+            ghcr.io/${{ github.repository_owner }}/react-app-cicd:${{ github.sha }}
+          file: Dockerfile
+          context: .
