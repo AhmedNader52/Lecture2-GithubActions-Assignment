@@ -29,7 +29,7 @@ jobs:
         run: npm run lint
         continue-on-error: true
 
-      # 5️⃣ Run unit tests
+      # 5️⃣ Unit tests
       - name: Run unit tests
         run: npm run test
 
@@ -37,7 +37,7 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      # 6.5️⃣ Prepare folder for Docker (must exist as dist/)
+      # 6.5️⃣ Prepare dist folder for Docker
       - name: Prepare dist folder for Docker
         run: |
           if [ -d build ]; then
@@ -57,8 +57,8 @@ jobs:
           username: ${{ env.OWNER_LOWER }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 9️⃣ Build and push Docker image
-      - name: Build and push Docker image to GHCR
+      # 9️⃣ Build & push Docker image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           push: true
