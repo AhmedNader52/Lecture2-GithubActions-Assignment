@@ -18,9 +18,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: react-app-build
-          path: ./deploy-artifact
+         
 
       - name: Simulate deployment
         run: |
           echo "Deploying to server"
-          ls -R ./deploy-artifact
+         
