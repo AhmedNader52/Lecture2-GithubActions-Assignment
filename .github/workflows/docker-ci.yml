@@ -1,57 +1,59 @@
 name: Dockerized CI pipeline
 
-
-on: push 
+on: push
 
 permissions:
-  packages: write 
+  packages: write
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout code
+      # 1️⃣ Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name:  use nodejs 20
+      # 2️⃣ Setup Node.js
+      - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: install dependencies
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: run lint phase
+      # 4️⃣ Lint
+      - name: Run lint phase
         run: npm run lint
         continue-on-error: true
 
-      - name: run unit tests
+      # 5️⃣ Run unit tests
+      - name: Run unit tests
         run: npm run test
 
-      - name: build static files
-        run : npm run build
+      # 6️⃣ Build static files
+      - name: Build React app
+        run: npm run build
 
-      - name: log in GHCR
+      # 7️⃣ Normalize repo owner for Docker (critical)
+      - name: Normalize repository owner
+        run: echo "OWNER_LOWER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # 8️⃣ Log in to GitHub Container Registry
+      - name: Log in to GHCR
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ env.OWNER_LOWER }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: build and push image to GHCR
-        uses: docker/build-push-action@v6.18.0 
+      # 9️⃣ Build and push Docker image
+      - name: Build and push Docker image to GHCR
+        uses: docker/build-push-action@v6
         with:
-          push: true 
+          push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/react-app-cicd:${{ github.sha }} 
-            ghcr.io/${{ github.repository_owner }}/react-app-cicd:latest      
-
-     
-
-      
-
-      
-
-      
-
-      
+            ghcr.io/${{ env.OWNER_LOWER }}/react-app-cicd:${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LOWER }}/react-app-cicd:latest
