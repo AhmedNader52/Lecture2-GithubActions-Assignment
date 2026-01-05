@@ -1,0 +1,57 @@
+name: Dockerized CI pipeline
+
+
+on: push 
+
+permissions:
+  packages: write 
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name:  use nodejs 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm install
+
+      - name: run lint phase
+        run: npm run lint
+        continue-on-error: true
+
+      - name: run unit tests
+        run: npm run test
+
+      - name: build static files
+        run : npm run build
+
+      - name: log in GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: build and push image to GHCR
+        uses: docker/build-push-action@v4 
+        with:
+          push: true 
+          tags: |
+            ghcr.io/${{ github.actor }}/react-app-cicd:${{ github.sha }} 
+            ghcr.io/${{ github.actor }}/react-app-cicd:latest      
+
+     
+
+      
+
+      
+
+      
+
+      
