@@ -43,8 +43,8 @@ jobs:
         with:
           push: true 
           tags: |
-            ghcr.io/${{ github.actor | toLower }}/react-app-cicd:${{ github.sha }} 
-            ghcr.io/${{ github.actor | toLower }}/react-app-cicd:latest      
+            ghcr.io/${{ toLower(github.actor) }}/react-app-cicd:${{ github.sha }} 
+            ghcr.io/${{ toLower(github.actor) }}/react-app-cicd:latest      
 
      
 
